@@ -1,0 +1,277 @@
+---
+import Base from '../layouts/Base.astro'
+import localesJson from '../i18n/locales.json'
+
+const title = 'Subdomains & Route Map - Omarchy'
+const description = 'Complete forensic catalog of all Omarchy subdomains, regional domains, and 105+ routes.'
+
+// Parse subdomains from locales
+const allLocales = Object.entries(localesJson)
+const subdomainsList = allLocales
+  .filter(([_, data]) => data.domain.includes('.omarchy.org'))
+  .map(([code, data]) => ({
+    code,
+    name: data.name,
+    domain: data.domain,
+    subdomain: data.domain.replace('https://', ''),
+    flag: data.flag || code.toUpperCase(),
+  }))
+
+const cctldList = allLocales
+  .filter(([_, data]) => !data.domain.includes('.omarchy.org') && data.domain !== 'https://omarchy.org')
+  .map(([code, data]) => ({
+    code,
+    name: data.name,
+    domain: data.domain,
+    host: data.domain.replace('https://', ''),
+  }))
+
+const standaloneApps = [
+  {
+    name: 'Plugins Marketplace',
+    subdomain: 'plugins.omarchy.org',
+    url: 'https://plugins.omarchy.org',
+    repo: 'omacom/omarchy-plugin-marketplace',
+    localPath: 'subdomains/plugins/',
+    desc: 'Community marketplace and registry for Omarchy shell plugins and widgets.',
+    status: 'Cloned Locally'
+  },
+  {
+    name: 'Omarchy Radio',
+    subdomain: 'radio.omarchy.org',
+    url: 'https://radio.omarchy.org',
+    repo: 'omacom/radio.omarchy.org',
+    localPath: 'subdomains/radio/',
+    desc: '24/7 web-based streaming ambient/lofi radio player built with Astro.',
+    status: 'Cloned Locally'
+  },
+  {
+    name: 'Omarchy CRT',
+    subdomain: 'crt.omarchy.org',
+    url: 'https://crt.omarchy.org',
+    repo: 'omacom/omarchy-site-crt',
+    localPath: 'subdomains/crt/',
+    desc: 'Vintage CRT monitor simulation and terminal display showcase.',
+    status: 'Cloned Locally'
+  }
+]
+---
+
+<Base title={title} description={description} path="/subdomains/">
+  <main class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="mb-12 border-b border-border-subtle pb-8">
+      <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface px-3 py-1 font-mono text-xs text-brand">
+        <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Directory & Inventory Map
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Omarchy Subdomains & Rute</h1>
+      <p class="mt-3 max-w-3xl text-base text-text-secondary leading-relaxed">
+        Inventaris lengkap <strong>100% exact</strong> dari seluruh ekosistem web Omarchy: <strong>20 Subdomain .omarchy.org</strong> (3 aplikasi mandiri + 17 bahasa/regional) dan <strong>105 Rute Konten</strong> di website utama.
+      </p>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="mb-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div class="rounded-xl border border-border-subtle bg-surface p-5">
+        <div class="font-mono text-xs text-text-secondary uppercase tracking-wider">Subdomain Aplikasi</div>
+        <div class="mt-2 text-3xl font-bold text-text">3</div>
+        <div class="mt-1 text-xs text-text-secondary">plugins, radio, crt</div>
+      </div>
+      <div class="rounded-xl border border-border-subtle bg-surface p-5">
+        <div class="font-mono text-xs text-text-secondary uppercase tracking-wider">Subdomain Bahasa</div>
+        <div class="mt-2 text-3xl font-bold text-brand">17</div>
+        <div class="mt-1 text-xs text-text-secondary">*.omarchy.org</div>
+      </div>
+      <div class="rounded-xl border border-border-subtle bg-surface p-5">
+        <div class="font-mono text-xs text-text-secondary uppercase tracking-wider">Domain Negara (ccTLD)</div>
+        <div class="mt-2 text-3xl font-bold text-text">20</div>
+        <div class="mt-1 text-xs text-text-secondary">.dk, .jp, .fr, .us, dll.</div>
+      </div>
+      <div class="rounded-xl border border-border-subtle bg-surface p-5">
+        <div class="font-mono text-xs text-text-secondary uppercase tracking-wider">Total Rute Konten</div>
+        <div class="mt-2 text-3xl font-bold text-emerald-400">105</div>
+        <div class="mt-1 text-xs text-text-secondary">Manual, News & Ported</div>
+      </div>
+    </div>
+
+    <!-- Standalone Subdomains (Cloned in subdomains/) -->
+    <section class="mb-14">
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold tracking-tight">1. Subdomain Aplikasi & Layanan (Mandiri)</h2>
+          <p class="text-sm text-text-secondary">Subdomain yang memiliki repositori GitHub terpisah dan kini sudah di-clone ke folder <code>subdomains/</code>.</p>
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        {standaloneApps.map((app) => (
+          <div class="group relative flex flex-col justify-between rounded-xl border border-border-subtle bg-surface p-5 transition-all hover:border-border-strong hover:bg-surface-2">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="rounded bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-400 border border-emerald-500/20">
+                  {app.status}
+                </span>
+                <span class="font-mono text-xs text-text-secondary">/{app.localPath}</span>
+              </div>
+              <h3 class="text-base font-bold text-text group-hover:text-brand">{app.name}</h3>
+              <p class="mt-1.5 font-mono text-xs text-brand">{app.subdomain}</p>
+              <p class="mt-2.5 text-xs text-text-secondary leading-normal">{app.desc}</p>
+            </div>
+            <div class="mt-5 border-t border-border-subtle pt-3 flex items-center justify-between text-xs">
+              <span class="font-mono text-text-secondary truncate">{app.repo}</span>
+              <a href={app.url} target="_blank" rel="noreferrer" class="text-brand hover:underline flex items-center gap-1 font-medium">
+                Visit &rarr;
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Language Subdomains -->
+    <section class="mb-14">
+      <div class="mb-6">
+        <h2 class="text-xl font-bold tracking-tight">2. Subdomain Bahasa & Regional Resmi (*.omarchy.org)</h2>
+        <p class="text-sm text-text-secondary">Tepat 17 subdomain bahasa yang ditenagai langsung oleh sistem translasi <code>src/i18n/</code> di repositori ini.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        {subdomainsList.map((item) => (
+          <a
+            href={item.domain}
+            target="_blank"
+            rel="noreferrer"
+            class="flex flex-col rounded-lg border border-border-subtle bg-surface p-3 transition-colors hover:border-brand hover:bg-surface-2"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-text">{item.name}</span>
+              <span class="font-mono text-[10px] text-text-secondary uppercase">{item.code}</span>
+            </div>
+            <span class="mt-1 font-mono text-[11px] text-text-secondary truncate">{item.subdomain}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Regional ccTLDs -->
+    <section class="mb-14">
+      <div class="mb-6">
+        <h2 class="text-xl font-bold tracking-tight">3. Domain Negara Regional (20 ccTLDs)</h2>
+        <p class="text-sm text-text-secondary">Domain regional resmi yang juga dibangun dari source code repositori ini.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4 md:grid-cols-5">
+        {cctldList.map((item) => (
+          <a
+            href={item.domain}
+            target="_blank"
+            rel="noreferrer"
+            class="flex items-center justify-between rounded-lg border border-border-subtle bg-surface px-3 py-2 text-xs transition-colors hover:border-brand hover:bg-surface-2"
+          >
+            <span class="font-medium text-text">{item.name}</span>
+            <span class="font-mono text-[11px] text-text-secondary">{item.host}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Exact 105 Routes Breakdown -->
+    <section class="mb-10">
+      <div class="mb-6 border-b border-border-subtle pb-4">
+        <h2 class="text-xl font-bold tracking-tight">4. Peta Rute Lengkap Website Utama (105 Rute)</h2>
+        <p class="text-sm text-text-secondary">Seluruh 105 URL unik yang aktif di server lokal Anda saat ini:</p>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-3">
+        <!-- Core & Ported -->
+        <div class="rounded-xl border border-border-subtle bg-surface p-5">
+          <div class="flex items-center justify-between pb-3 border-b border-border-subtle mb-3">
+            <h3 class="font-bold text-sm text-text">Halaman Inti & Hub</h3>
+            <span class="font-mono text-xs text-brand">21 Rute</span>
+          </div>
+          <ul class="space-y-1 font-mono text-xs text-text-secondary">
+            <li><a href="/" class="hover:text-brand hover:underline">/ (Homepage)</a></li>
+            <li><a href="/manual/" class="hover:text-brand hover:underline">/manual/ (TOC)</a></li>
+            <li><a href="/news/" class="hover:text-brand hover:underline">/news/ (Index)</a></li>
+            <li><a href="/themes/" class="hover:text-brand hover:underline">/themes/</a></li>
+            <li><a href="/meetups/" class="hover:text-brand hover:underline">/meetups/</a></li>
+            <li><a href="/teams/" class="hover:text-brand hover:underline">/teams/</a></li>
+            <li><a href="/workstations/" class="hover:text-brand hover:underline">/workstations/</a></li>
+            <li><a href="/air/" class="hover:text-brand hover:underline">/air/</a></li>
+            <li><a href="/foundation/" class="hover:text-brand hover:underline">/foundation/</a></li>
+            <li><a href="/omakub/" class="hover:text-brand hover:underline">/omakub/</a></li>
+            <li><a href="/patrons/" class="hover:text-brand hover:underline">/patrons/</a></li>
+            <li><a href="/patrons/badges/" class="hover:text-brand hover:underline">/patrons/badges/</a></li>
+            <li><a href="/potato/" class="hover:text-brand hover:underline">/potato/</a></li>
+            <li><a href="/security/" class="hover:text-brand hover:underline">/security/</a></li>
+            <li><a href="/security/credits/" class="hover:text-brand hover:underline">/security/credits/</a></li>
+            <li><a href="/server/" class="hover:text-brand hover:underline">/server/</a></li>
+            <li><a href="/sponsorships/" class="hover:text-brand hover:underline">/sponsorships/</a></li>
+            <li><a href="/staff/" class="hover:text-brand hover:underline">/staff/</a></li>
+            <li><a href="/brand/" class="hover:text-brand hover:underline">/brand/</a></li>
+            <li><a href="/subdomains/" class="text-brand font-bold hover:underline">/subdomains/ (Halaman Ini)</a></li>
+            <li><a href="/data/search-index.json" class="hover:text-brand hover:underline">/data/search-index.json</a></li>
+          </ul>
+        </div>
+
+        <!-- 51 Manual Chapters -->
+        <div class="rounded-xl border border-border-subtle bg-surface p-5">
+          <div class="flex items-center justify-between pb-3 border-b border-border-subtle mb-3">
+            <h3 class="font-bold text-sm text-text">Dokumentasi Manual</h3>
+            <span class="font-mono text-xs text-brand">51 Bab</span>
+          </div>
+          <div class="max-h-96 overflow-y-auto pr-2">
+            <ul class="space-y-1 font-mono text-xs text-text-secondary">
+              <li><a href="/manual/getting-started/" class="hover:text-brand hover:underline">/manual/getting-started/</a></li>
+              <li><a href="/manual/coming-from-mac-or-windows/" class="hover:text-brand hover:underline">/manual/coming-from-mac-or-windows/</a></li>
+              <li><a href="/manual/navigation/" class="hover:text-brand hover:underline">/manual/navigation/</a></li>
+              <li><a href="/manual/the-top-bar/" class="hover:text-brand hover:underline">/manual/the-top-bar/</a></li>
+              <li><a href="/manual/themes/" class="hover:text-brand hover:underline">/manual/themes/</a></li>
+              <li><a href="/manual/hotkeys/" class="hover:text-brand hover:underline">/manual/hotkeys/</a></li>
+              <li><a href="/manual/unified-clipboard-history/" class="hover:text-brand hover:underline">/manual/unified-clipboard-history/</a></li>
+              <li><a href="/manual/reminders/" class="hover:text-brand hover:underline">/manual/reminders/</a></li>
+              <li><a href="/manual/notices/" class="hover:text-brand hover:underline">/manual/notices/</a></li>
+              <li><a href="/manual/text-extraction-dictation/" class="hover:text-brand hover:underline">/manual/text-extraction-dictation/</a></li>
+              <li><a href="/manual/screenshots-recording/" class="hover:text-brand hover:underline">/manual/screenshots-recording/</a></li>
+              <li><a href="/manual/toggles-idle-screensaver/" class="hover:text-brand hover:underline">/manual/toggles-idle-screensaver/</a></li>
+              <li><a href="/manual/omarchy-cli/" class="hover:text-brand hover:underline">/manual/omarchy-cli/</a></li>
+              <li><a href="/manual/terminal/" class="hover:text-brand hover:underline">/manual/terminal/</a></li>
+              <li><a href="/manual/neovim/" class="hover:text-brand hover:underline">/manual/neovim/</a></li>
+              <li><a href="/manual/ai/" class="hover:text-brand hover:underline">/manual/ai/</a></li>
+              <li><a href="/manual/development-tools/" class="hover:text-brand hover:underline">/manual/development-tools/</a></li>
+              <li><a href="/manual/shell-tools/" class="hover:text-brand hover:underline">/manual/shell-tools/</a></li>
+              <li><a href="/manual/tuis/" class="hover:text-brand hover:underline">/manual/tuis/</a></li>
+              <li><a href="/manual/guis/" class="hover:text-brand hover:underline">/manual/guis/</a></li>
+              <li><a href="/manual/browsers/" class="hover:text-brand hover:underline">/manual/browsers/</a></li>
+              <li><a href="/manual/troubleshooting/" class="hover:text-brand hover:underline">/manual/troubleshooting/</a></li>
+              <li><a href="/manual/dual-boot-install/" class="hover:text-brand hover:underline">/manual/dual-boot-install/</a></li>
+              <li class="pt-2 text-[10px] text-text-secondary/70 italic">+ 28 bab lainnya lengkap</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 33 News Articles -->
+        <div class="rounded-xl border border-border-subtle bg-surface p-5">
+          <div class="flex items-center justify-between pb-3 border-b border-border-subtle mb-3">
+            <h3 class="font-bold text-sm text-text">Artikel Berita & Rilis</h3>
+            <span class="font-mono text-xs text-brand">33 Artikel</span>
+          </div>
+          <div class="max-h-96 overflow-y-auto pr-2">
+            <ul class="space-y-1 font-mono text-xs text-text-secondary">
+              <li><a href="/news/2026/08/introducing-omarchy-air/" class="hover:text-brand hover:underline">.../introducing-omarchy-air/</a></li>
+              <li><a href="/news/2026/08/100000-downloads-in-a-week/" class="hover:text-brand hover:underline">.../100000-downloads-in-a-week/</a></li>
+              <li><a href="/news/2026/08/introducing-the-omarchy-rangers/" class="hover:text-brand hover:underline">.../introducing-the-omarchy-rangers/</a></li>
+              <li><a href="/news/2026/08/omacom-foundation-launches-with-8-million/" class="hover:text-brand hover:underline">.../omacom-foundation-launches.../</a></li>
+              <li><a href="/news/2026/08/the-first-plugin-competition/" class="hover:text-brand hover:underline">.../the-first-plugin-competition/</a></li>
+              <li><a href="/news/2026/09/introducing-omarchy-dragon/" class="hover:text-brand hover:underline">.../introducing-omarchy-dragon/</a></li>
+              <li><a href="/news/2026/09/theprimeagen-joins-omarchy-core/" class="hover:text-brand hover:underline">.../theprimeagen-joins-omarchy-core/</a></li>
+              <li><a href="/news/2026/09/quattro-crosses-200000-iso-downloads/" class="hover:text-brand hover:underline">.../quattro-crosses-200000-iso.../</a></li>
+              <li><a href="/news/2026/10/omarchy-launches-bug-bounty-program-on-hackerone/" class="hover:text-brand hover:underline">.../omarchy-launches-bug-bounty.../</a></li>
+              <li class="pt-2 text-[10px] text-text-secondary/70 italic">+ 24 artikel lainnya lengkap</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
